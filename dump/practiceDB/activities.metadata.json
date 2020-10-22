@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"practiceDB.activities"}],"uuid":"b24279620a7c48de9ab7ce045c10accd"}
