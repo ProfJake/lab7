@@ -1,0 +1,191 @@
+STUDENTS:  when you see a line that is indented, that indicates that you should run that line as either code or in the mongo shell
+
+    git clone https://github.com/ProfJake/lab7.git
+
+        cd lab7
+
+        mongorestore --db=practiceDB dump/
+
+If you already have a copy of some DB named practiceDB, mongorestore will insert new
+documents but won't update/overwrite documents that already exist in your local copy of
+the DB.  If you want a total refresh, you'll have to drop the local database before
+restoring.
+
+Switch to the restored practiceDB:
+
+        use practiceDB
+
+set a pointer to the user collection:
+
+    user=db.getCollection("users")
+
+INSERTS
+
+Inserts are easy.  We can insert one or many:
+
+	insert your username and email into the users collection this will be part of your HW, so
+	doing it now will help
+
+	user.insert({_id: <pick a username>, name: <your name>, age: , email:, email_verified: })
+
+Queries
+
+set a pointer to the collection we want to work with:
+
+    act=db.getCollection("activities")
+
+Running:
+
+        act.find()
+
+will return all fields of all documents in the collection.
+
+Once you pass in a filter, you will get all documents with a match in the specified field
+
+        act.find({distance: 3}).pretty()
+
+# pretty function makes it easier to read the results
+
+You can search for multiple fields simultaneously (basically an AND operator)
+
+EXAMPLES
+
+	act.find({distance: 3}).pretty()
+
+ 	act.find({distance: 3, user: "heavyMetalHippy"}).pretty()
+
+	act.find({distance: 5, user: "loc_the_viking"}).pretty()
+
+You can also search for properties of embedded documents
+
+    act.find({ "activity.type": "walking" }).pretty()
+
+NOTE: the property label for any property can be placed in " " but for embedded document
+properties it MUST be quoted for Mongo to recognize it as single "property string"
+
+
+You are often going to want to limit the data that comes back from the DB, especially in your applications when you don't need ALL data at one time. Projections allow you to suppress or specify fields that you need.
+
+To specify a projection, include a second mongo document that lists the fields you want or don't want.
+Except for _id, you can either exclude OR include fields, not both.
+
+This command will fail:
+
+     act.find({"activity.type" : "walking"}, { _id: 1, activity:0})
+
+If you specifically include fields, then other fields will not be included in results
+
+   act.find({"activity.type" : "walking"}, {activity:1})
+
+   act.find({"activity.type" : "walking"}, {activity:1, weight: 1})
+
+  If you specifically exclude fields, then all other fields will be included in results
+
+  act.find({"activity.type" : "walking"}, {activity:0, weight: 0})
+
+
+The ONLY exception to this rule is the _id field. Its usually returned by default from every query but can always be turned off in any projection.  The other fields must all perform the same operations as each other.
+
+        act.find({"activity.type" : "walking"}, { _id: 0})
+
+	act.find({"activity.type" : "walking"}, { _id: 0, activity: 1})
+
+	act.find({"activity.type" : "walking"}, { _id: 0, activity: 1, weight: 1})
+
+	act.find({"activity.type" : "walking"}, { _id: 0, activity: 0, weight:0})
+
+This one will fail because weight and activity are different:
+
+     act.find({"activity.type" : "walking"}, { _id: 0, activity: 1, weight: 0})
+
+Queries
+
+Mongo provides SEVERAL query operators, for queries that require more nuance than a simple equality check. https://docs.mongodb.com/manual/reference/operator/query-comparison/
+
+mongo operators are specified as sub-documents
+
+       act.find({weight: {$lte: 200} }).pretty()
+
+        act.find({weight: {$gte: 200}}).pretty()
+
+	 act.find({weight: {$gte: 200}, distance: {$lt: 4}}).pretty()
+
+We can also query for regex matches
+
+   act.find({ user: {$regex: /v.*k/} }).pretty()
+
+   act.find({ user: /v.*k/ }).pretty()
+
+
+Or for values in a set (Logical OR)
+
+   act.find({ user: {$in: ["loc_the_viking", "heavyMetalHippy"] }}).pretty()
+
+   act.find({ distance: {$in: [3,4,5] }}).pretty()
+
+
+OR values NOT in a set:
+   act.find({ distance: {$nin: [3,4,5] }}).pretty()
+
+
+MONGO also provides logical operators to combine conditions in a variety of ways.  $and is good for when you have multiple constraints on a single field. It accepts an array of documents. But we can apply implicitly as we showed before.
+
+$or is good for mutually exclusive conditions.
+
+    act.find({ $or : [ {weight: {$gt:300}}, {weight: {$lt:200} }]})
+
+These can be nested in each as deeply as necessary but you should try to limit deeply nested boolean logic.
+
+
+Mongo also provides Nor (exclusive or) and Not (invert)
+
+Lastly Mongo provides some element query operators for testing elements in the collection.
+
+
+       act.find({user : { $exists: false}})
+       		      act.find({user : { $exists: true}})
+
+		      act.find({weight: {$type: "double"}})
+
+
+MONGO provides A LOT more query operators, far more than we could cover in class. These are the basic ones, and the ones that I think are most important for your purposes.  If you need ANYTHING more advanced you should check the documentation.
+
+
+UPDATES
+
+Now that you've had some practice with querying the DB, we can move on to updating documents in the DB.
+
+Updates have 3 parts, the first part being a query document of some kind. See we're halfway through updates already:
+
+https://docs.mongodb.com/manual/reference/method/db.collection.update/#db.collection.update
+
+The third part is an options object that we can mostly ignore.  You can look over it briefly just to see what's available but for the most part for this class and for your projects you can probably just use the default values.
+
+That only leaves the 2nd part.  The second document that must be passed. For now, the only type of update we care about is type that uses mongo's update operators
+
+https://docs.mongodb.com/manual/reference/operator/update/
+
+
+If you don't specify a document uniquely, then Mongo will update the first document it finds.
+
+   act.update({ user: "heavyMetalHippy"},  {$inc: {weight: -10}})
+
+This one is more specific
+
+act.update({ user: "heavyMetalHippy", weight: {$lt: 190}},  {$set: {user: "loc_the_viking"}})
+
+
+
+You can target multiple documents with update but you have to specify the multi option in the options object.  You are better off using the updateMany() function:
+
+    act.updateMany({user: {$exists: false}, weight:  {$gt: 198, $lte: 200}}, {$set: {user:    "heavyMetalHippy"}})
+
+
+
+LAST THING:
+
+AGGREGATIONS are Mongo's method of performing Joins.  We won't get too deep into them in this class, due to time constraints but they are interesting and can provide your DB sometimes much needed relational support
+
+
+act.aggregate([ { $lookup: { from: "users", localField: "user", foreignField:"_id", as: "user_info" }  }, {$project: { _id:0, weight: 1, "user_info.name": 1}}])
+
