@@ -6,10 +6,13 @@ unable to follow along with the lecture activity, make sure you go back and
 watch that video/get the notes from a fellow student, and do the exercises that
 we do in the video, otherwise you will get "incorrect" results.  You'll be
 turning in screenshots of your queries and transactions as well as their
-results so I'll know if you were following along in the lecture.
+results so I'll know if you were following along in the lecture. The insert
+that I perform in the beginning should include your name and whatever other
+info you want to share (you don't have to put your real email, if you don't
+want to but it does need to be your name).
 
-To upload the starting point for this lab, make sure your mongod service is
-running. Make sure you are in THIS directory and then run:
+To setup the starting point for this lab, make sure your mongod service is
+running. Make sure you are in THIS directory (lab 7) and then run:
 
 	mongorestore --db=practiceDB dump/practiceDB
 	^^		     ^^	      ^		^
