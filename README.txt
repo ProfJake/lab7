@@ -18,6 +18,11 @@ running. Make sure you are in THIS directory (lab 7) and then run:
 	^^		     ^^	      ^		^
 	restore	    	  this DB     from this directory
 
+WINDOWS USERS: you may need to download mongo database tools as a separate
+package and then once downloaded and moved onto your harddrive,
+specify mongorestore's full path (rather than just the command)
+
+
 This assignment is relatively simple. Based on the stuff we did in the class,
 the slides and notes you've been provided, and the MongoDB documents on query
 (https://docs.mongodb.com/manual/reference/operator/query/) and update
