@@ -1,15 +1,11 @@
 # practiceDB dump file (mongodb)
 # Jake Levy
 # A simple dummy db assignment for students to practice with
-# The starting point for the lab.  IF you were not in class or were otherwise
-unable to follow along with the lecture activity, make sure you go back and
-watch that video/get the notes from a fellow student, and do the exercises that
-we do in the video, otherwise you will get "incorrect" results.  You'll be
+# The starting point for the lab.  IF you were not in class or are otherwise
+unable to follow along with this lab activity, make sure you go back and
+get the notes from a fellow student, and do the associated reading.  You'll be
 turning in screenshots of your queries and transactions as well as their
-results so I'll know if you were following along in the lecture. The insert
-that I perform in the beginning should include your name and whatever other
-info you want to share (you don't have to put your real email, if you don't
-want to but it does need to be your name).
+results. 
 
 To setup the starting point for this lab, make sure your mongod service is
 running. Make sure you are in THIS directory (lab 7) and then run:
@@ -40,6 +36,11 @@ to read the text, its getting marked incorrect.
 IF you totally screw up and need to start all over, drop the database
 (db.dropDataBase()) and then re-run the mongorestore at the top of this file.
 
+0) ** BEFORE YOU BEGIN THE LAB **
+You need perform an *insert* into the users collection.  The insert should 
+include your name and whatever other info you want to share. You don't have
+share your real info, except for you name (so I know whose assignment I am
+grading). 
 
 1)  Write a query that will find the entry in users that contains your
 information.  Any query that uniquely identifies your info is sufficient. Use
