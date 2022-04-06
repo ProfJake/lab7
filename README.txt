@@ -14,9 +14,11 @@ running. Make sure you are in THIS directory (lab 7) and then run:
 	^^		     ^^	      ^		^
 	restore	    	  this DB     from this directory
 
-WINDOWS USERS: you may need to download mongo database tools as a separate
+**WINDOWS USERS**: you may need to download mongo database tools as a separate
 package and then once downloaded and moved onto your harddrive,
-specify mongorestore's full path (rather than just the command)
+specify mongorestore's full path (rather than just the command).  Or follow
+the installation instructions from mongodb site and add the utilities folder to
+your PATH environment variable and you can just type mongorestore to start the command.
 
 
 This assignment is relatively simple. Based on the stuff we did in the class,
